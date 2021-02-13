@@ -3,6 +3,7 @@ import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import Image from 'next/image'
 import CardActions from '@material-ui/core/CardActions'
+// import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core'
 
 import imageURL from '../../public/Logo.svg'
