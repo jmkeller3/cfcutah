@@ -5,8 +5,15 @@ import Image from 'next/image'
 import CardActions from '@material-ui/core/CardActions'
 // import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core'
-
+import { getEvents } from '../../config'
 import imageURL from '../../public/Logo.svg'
+import { format } from 'date-fns'
+
+export async function getServerSideProps() {
+  const events = await getEvents()
+
+  return { props: { events } }
+}
 
 const useStyles = makeStyles({
   card: {
@@ -25,8 +32,9 @@ const useStyles = makeStyles({
   },
 })
 
-const EventsPage = () => {
+const EventsPage = ({ events }) => {
   const classes = useStyles()
+
   return (
     <main
       style={{
@@ -39,35 +47,38 @@ const EventsPage = () => {
       }}
     >
       <h1 style={{ margin: '0' }}>Upcoming Events</h1>
-      <Card raised={true} className={classes.card}>
-        <Image
-          src='/Logo.svg'
-          height={200}
-          width={240}
-          className={classes.image}
-        />
-        <CardContent>
-          <h2>Lorem ipsum dolor sit amet consectetur.</h2>
-          <h3>Date</h3>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nostrum
-            ipsum, in quas autem quibusdam quod distinctio a fuga cupiditate
-            commodi.
-          </p>
-          <CardActions>
-            <Button
-              size='small'
-              color='primary'
-              variant='contained'
-              target='_blank'
-              href='#'
-              style={{ margin: 'auto' }}
-            >
-              More details
-            </Button>
-          </CardActions>
-        </CardContent>
-      </Card>
+      {events &&
+        events.map((event) => (
+          <Card
+            raised={true}
+            className={classes.card}
+            key={event.id + Math.random()}
+          >
+            <Image
+              src='/Logo.svg'
+              height={200}
+              width={240}
+              className={classes.image}
+            />
+            <CardContent>
+              <h2>{event.title}</h2>
+              <h3>{format(event.date, 'MM/dd/yyyy')}</h3>
+              <p>{event.details}</p>
+              <CardActions>
+                <Button
+                  size='small'
+                  color='primary'
+                  variant='contained'
+                  target='_blank'
+                  href={event.link}
+                  style={{ margin: 'auto' }}
+                >
+                  More details
+                </Button>
+              </CardActions>
+            </CardContent>
+          </Card>
+        ))}
     </main>
   )
 }

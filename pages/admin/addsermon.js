@@ -13,6 +13,7 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers'
+import { format } from 'date-fns'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,8 +29,11 @@ const useStyles = makeStyles((theme) => ({
   card: {
     minWidth: 275,
     maxWidth: 500,
-    backgroundColor: '#eee',
+    backgroundColor: '#333',
     marginBottom: '20px',
+  },
+  white: {
+    color: '#fff',
   },
 }))
 
@@ -108,7 +112,7 @@ const PostSermon = () => {
   const [passage, setPassage] = useState('')
   const [date, setDate] = useState(new Date())
   const [book, setBook] = useState('')
-  const [description, setDescription] = useState([])
+  const [description, setDescription] = useState('')
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -122,8 +126,9 @@ const PostSermon = () => {
 
   const handleDateChange = (date) => {
     setDate(date)
-    console.log(date)
   }
+
+  const formatDate = format(date, 'MM/dd/yyyy')
 
   const classes = useStyles()
 
@@ -206,25 +211,59 @@ const PostSermon = () => {
           </div>
         </form>
       </Container>
-      <Container maxWidth='md'>
+      <Container
+        maxWidth='md'
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          textAlign: 'center',
+          // backgroundColor: '#93cbab',
+        }}
+      >
         <h2>Sermon Preivew</h2>
         <Card className={classes.card}>
           <CardContent>
-            <Typography color='textSecondary' gutterBottom>
+            <Typography className={classes.white} gutterBottom>
               {passage ? passage : 'Passage will display here'}
             </Typography>
-            <Typography variant='h5' component='h2'>
+            <Typography
+              variant='h5'
+              component='h2'
+              color='primary'
+              gutterBottom
+            >
               {title ? title : 'Title will display here'}
             </Typography>
-            <Typography color='textSecondary'>
+            <Typography className={classes.white} gutterBottom>
               {preacher ? preacher : 'Preacher will display here'}
             </Typography>
-            <Typography variant='body2' component='p'>
-              {description ? description : 'description will display here'}
+            <Typography
+              variant='body2'
+              color='primary'
+              align='center'
+              gutterBottom
+            >
+              {date ? formatDate : 'Date will display here'}
+            </Typography>
+            <Typography variant='body1' component='p' className={classes.white}>
+              {description ? description : 'Description will display here'}
             </Typography>
           </CardContent>
-          <CardActions>
-            <Button size='small'>Listen or Download</Button>
+          <CardActions
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+              // backgroundColor: '#93cbab',
+            }}
+          >
+            <Button size='small' className={classes.white}>
+              Listen or Download
+            </Button>
           </CardActions>
         </Card>
       </Container>

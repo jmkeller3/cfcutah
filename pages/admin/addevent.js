@@ -19,6 +19,7 @@ import {
 import { format } from 'date-fns'
 
 import imageURL from '../../public/Logo.svg'
+import { firestore } from '../../config'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,28 +56,40 @@ const AddEvent = () => {
   const [link, setLink] = useState('#')
   const [isPending, setIsPending] = useState(false)
 
+  const router = useRouter()
+
   const handleSubmit = (e) => {
     e.preventDefault()
-    const event = { title, date, body }
+    const event = { title, date, body, link }
 
     setIsPending(true)
 
-    fetch('#', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(event),
-    }).then(() => {
-      console.log('new event added')
-      setIsPending(false)
-      setTimeout(() => {
-        Router.push('/events')
-      }, 1500)
-    })
+    try {
+      firestore
+        .collection('events')
+        .add({
+          title,
+          date,
+          details: body,
+          link,
+        })
+        .then((docRef) => {
+          console.log('Document written with ID: ', docRef.id)
+        })
+        .then(() => {
+          console.log('new event added')
+          setIsPending(false)
+          setTimeout(() => {
+            router.push('/events')
+          }, 1500)
+        })
+    } catch (error) {
+      console.error('Error adding document: ', error)
+    }
   }
 
   const handleDateChange = (date) => {
     setDate(date)
-    console.log(date)
   }
 
   const formatDate = format(date, 'MM/dd/yyyy')
@@ -134,11 +147,11 @@ const AddEvent = () => {
             onChange={({ target }) => setLink(target.value)}
           />
           {!isPending && (
-            <Button color='secondary' variant='outlined'>
-              Add Blog
+            <Button color='secondary' variant='outlined' type='submit'>
+              Add Event
             </Button>
           )}
-          {isPending && <Button disabled>Adding Blog...</Button>}
+          {isPending && <Button disabled>Adding Event...</Button>}
         </form>
         <h1 style={{ margin: '0' }}>Preivew</h1>
         <Card raised={true} className={classes.card}>
