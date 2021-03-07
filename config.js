@@ -45,11 +45,8 @@ export async function getEvents() {
 
 // Sermons
 export async function getSermons() {
-  const sermonsRef = firestore
-    .collection('sermons')
-    .orderBy('createdAt', 'desc')
-    .limit(5)
-  const snapshot = await sermonsRef().get()
+  const sermonsRef = firestore.collection('sermons').limit(5)
+  const snapshot = await sermonsRef.get()
   let sermonsDocs = []
   snapshot.forEach((doc) => {
     sermonsDocs.push(doc.data())

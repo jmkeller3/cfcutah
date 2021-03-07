@@ -38,6 +38,14 @@ const useStyles = makeStyles({
   },
 })
 
+function handleEdit() {
+  console.log('edit page')
+}
+
+function handleDelete() {
+  console.log('delete page')
+}
+
 const EventsPage = ({ events }) => {
   const classes = useStyles()
 
@@ -81,6 +89,13 @@ const EventsPage = ({ events }) => {
                 >
                   More details
                 </Button>
+                <small>
+                  Below will not be visible to users. It is the url of the link
+                  above.
+                </small>
+                <p>{event.link}</p>
+                <Button>Edit</Button>
+                <Button>Delete</Button>
               </CardActions>
             </CardContent>
           </Card>
