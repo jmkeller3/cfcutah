@@ -117,7 +117,9 @@ const PostSermon = () => {
   const [book, setBook] = useState('')
   const [description, setDescription] = useState('')
   const [url, setUrl] = useState(null)
+  const [file, setFile] = useState(null)
   const [isPending, setIsPending] = useState(false)
+  const [fileError, setFileError] = useState(null)
 
   const router = useRouter()
 
@@ -156,11 +158,25 @@ const PostSermon = () => {
 
   const handleSelect = (e) => {
     setBook(e.target.value)
-    console.log(e)
+    // console.log(e)
   }
 
   const handleDateChange = (date) => {
     setDate(date)
+  }
+
+  const types = ['audio/x-m4a']
+
+  const handleFile = (e) => {
+    let selected = e.target.files[0]
+
+    if (selected && types.includes(selected.type)) {
+      setFile(selected)
+      setFileError('')
+    } else {
+      setFile(null)
+      setFileError('Please select an accepted audio file (m4a)')
+    }
   }
 
   const formatDate = format(date, 'MM/dd/yyyy')
@@ -232,6 +248,7 @@ const PostSermon = () => {
             variant='outlined'
             onChange={({ target }) => setDescription(target.value)}
           />
+          <input type='file' onChange={handleFile} />
           <div>
             <Button
               type='submit'

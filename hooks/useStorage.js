@@ -1,7 +1,15 @@
 import { useState, useEffect } from 'react'
 import { storage, timestamp, firestore } from '../config'
 
-const useStorage = (file) => {
+const useStorage = (
+  file,
+  title,
+  preacher,
+  passage,
+  date,
+  book,
+  description
+) => {
   const [progress, setProgress] = useState(0)
   const [error, setError] = useState(null)
   const [url, setUrl] = useState(null)
@@ -23,10 +31,18 @@ const useStorage = (file) => {
       },
       async () => {
         const url = await storageRef.getDownloadURL()
-        console.log(url)
         const createdAt = timestamp()
         setUrl(url)
-        collectionRef.add({ url, createdAt })
+        collectionRef.add({
+          url,
+          createdAt,
+          title,
+          preacher,
+          passage,
+          date,
+          book,
+          description,
+        })
       }
     )
   }, [file])
