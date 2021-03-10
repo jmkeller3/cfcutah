@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
+import { useRouter } from 'next/router'
 import TextField from '@material-ui/core/TextField'
 import MenuItem from '@material-ui/core/MenuItem'
 import Button from '@material-ui/core/Button'
@@ -14,6 +15,8 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers'
 import { format } from 'date-fns'
+
+import { firestore } from '../../config'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -113,10 +116,42 @@ const PostSermon = () => {
   const [date, setDate] = useState(new Date())
   const [book, setBook] = useState('')
   const [description, setDescription] = useState('')
+  const [url, setUrl] = useState(null)
+  const [isPending, setIsPending] = useState(false)
+
+  const router = useRouter()
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log('test', title, preacher, passage, date, book, description)
+    const sermon = { title, preacher, passage, date, book, description }
+
+    setIsPending(true)
+
+    try {
+      firestore
+        .collection('sermons')
+        .add({
+          title,
+          preacher,
+          passage,
+          date,
+          book,
+          description,
+          url,
+        })
+        .then((docRef) => {
+          console.log('Document written with ID: ', docRef.id)
+        })
+        .then(() => {
+          console.log('new sermon added')
+          setIsPending(false)
+          setTimeout(() => {
+            router.push('/sermons')
+          }, 1500)
+        })
+    } catch (error) {
+      console.error('Error adding document: ', error)
+    }
   }
 
   const handleSelect = (e) => {
