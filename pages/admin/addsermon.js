@@ -16,7 +16,7 @@ import {
 } from '@material-ui/pickers'
 import { format } from 'date-fns'
 
-import { firestore } from '../../config'
+import { storage, timestamp, firestore } from '../../config'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -120,37 +120,79 @@ const PostSermon = () => {
   const [file, setFile] = useState(null)
   const [isPending, setIsPending] = useState(false)
   const [fileError, setFileError] = useState(null)
+  const [progress, setProgress] = useState(0)
 
   const router = useRouter()
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    const sermon = { title, preacher, passage, date, book, description }
+    // const sermon = { title, preacher, passage, date, book, description }
 
     setIsPending(true)
 
     try {
-      firestore
-        .collection('sermons')
-        .add({
-          title,
-          preacher,
-          passage,
-          date,
-          book,
-          description,
-          url,
-        })
-        .then((docRef) => {
-          console.log('Document written with ID: ', docRef.id)
-        })
-        .then(() => {
-          console.log('new sermon added')
-          setIsPending(false)
-          setTimeout(() => {
-            router.push('/sermons')
-          }, 1500)
-        })
+      const storageRef = storage.ref(file.name)
+
+      const collectionRef = firestore.collection('sermons')
+
+      storageRef.put(file).on(
+        'state_changed',
+        (snap) => {
+          let percentage = (snap.bytesTransferred / snap.totalBytes) * 100
+          setProgress(percentage)
+        },
+        (err) => {
+          setError(err)
+        },
+        async () => {
+          const url = await storageRef.getDownloadURL()
+          const createdAt = timestamp()
+          setUrl(url)
+          collectionRef
+            .add({
+              url,
+              createdAt,
+              title,
+              preacher,
+              passage,
+              date,
+              book,
+              description,
+            })
+            .then((docRef) => {
+              console.log('Document written with ID: ', docRef.id)
+            })
+            .then(() => {
+              console.log('new sermon added')
+              setIsPending(false)
+              setTimeout(() => {
+                router.push('/sermons')
+              }, 1500)
+            })
+        }
+      )
+
+      // firestore
+      //   .collection('sermons')
+      //   .add({
+      //     title,
+      //     preacher,
+      //     passage,
+      //     date,
+      //     book,
+      //     description,
+      //     url,
+      //   })
+      //   .then((docRef) => {
+      //     console.log('Document written with ID: ', docRef.id)
+      //   })
+      //   .then(() => {
+      //     console.log('new sermon added')
+      //     setIsPending(false)
+      //     setTimeout(() => {
+      //       router.push('/sermons')
+      //     }, 1500)
+      //   })
     } catch (error) {
       console.error('Error adding document: ', error)
     }
