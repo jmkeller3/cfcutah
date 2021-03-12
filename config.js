@@ -50,7 +50,6 @@ export async function getSermons() {
   let sermonsDocs = []
   snapshot.forEach((doc) => {
     sermonsDocs.push(doc.data())
-    console.log(doc.data())
   })
 
   return sermonsDocs

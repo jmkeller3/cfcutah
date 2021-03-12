@@ -113,7 +113,7 @@ const PostSermon = () => {
   const [title, setTitle] = useState('')
   const [preacher, setPreacher] = useState('')
   const [passage, setPassage] = useState('')
-  const [date, setDate] = useState(new Date())
+  const [date, setDate] = useState(Date.now())
   const [book, setBook] = useState('')
   const [description, setDescription] = useState('')
   const [url, setUrl] = useState(null)
@@ -151,7 +151,6 @@ const PostSermon = () => {
           collectionRef
             .add({
               url,
-              createdAt,
               title,
               preacher,
               passage,
