@@ -15,6 +15,7 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers'
 import { format } from 'date-fns'
+import Link from '../../src/Link'
 
 import { storage, timestamp, firestore } from '../../config'
 
@@ -228,6 +229,9 @@ const PostSermon = () => {
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Container maxWidth='md'>
         <h1>Add A Sermon To The Website</h1>
+        <Link href='/admin'>
+          <Button variant='contained'>Go Back</Button>
+        </Link>
         <form
           onSubmit={handleSubmit}
           className={classes.root}

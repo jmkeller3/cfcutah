@@ -15,6 +15,7 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers'
+import Link from '../../src/Link'
 
 import { format } from 'date-fns'
 
@@ -96,6 +97,9 @@ const AddEvent = () => {
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <Link href='/admin'>
+        <Button variant='contained'>Go Back</Button>
+      </Link>
       <main
         style={{
           display: 'flex',
